@@ -14,7 +14,7 @@ jobs:
       - name: Checkout this repo
         uses: actions/checkout@v4
 
-      # 2. 检出上游仓库的默认分支（公开仓库无需 token）
+      # 2. 检出上游仓库的默认分支
       - name: Checkout upstream repo
         uses: actions/checkout@v4
         with:
@@ -26,11 +26,13 @@ jobs:
         run: |
           rm -f upstream/wrangler.toml
           rm -rf upstream/.github/workflows
+          rm -rf upstream/.git
 
       # 4. 拷贝剩余内容到工作区
       - name: Copy upstream content
         run: |
           cp -a upstream/. .
+          rm -rf upstream
 
       # 5. 提交并推送（仅当有变更时）
       - name: Commit & Push changes
