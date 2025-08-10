@@ -1,4 +1,4 @@
-name = "pb"
+name = "p"
 compatibility_date = "2025-04-24"
 
 workers_dev = false
@@ -22,10 +22,14 @@ crons = ["0 */6 * * *"]
 # lines below are what you should modify
 #----------------------------------------
 
+[observability]
+enabled = true
+
 [[routes]]
 # Refer to https://developers.cloudflare.com/workers/wrangler/configuration/#routes
-pattern = "p.787a68.de"
-custom_domain = true
+pattern = "p.787a68.de/*"
+zone_name = "787a68.de"
+workers_dev = false
 
 [[kv_namespaces]]
 binding = "PB"  # do not touch this
