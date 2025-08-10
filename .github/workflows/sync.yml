@@ -8,24 +8,31 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    steps:
 
+    steps:
+      # 1. 检出自己仓库的默认分支
       - name: Checkout this repo
         uses: actions/checkout@v4
 
-      - name: Clone upstream repo
-        run: |
-          git clone --depth=1 https://github.com/SharzyL/pastebin-worker.git upstream
+      # 2. 检出上游仓库的默认分支（公开仓库无需 token）
+      - name: Checkout upstream repo
+        uses: actions/checkout@v4
+        with:
+          repository: SharzyL/pastebin-worker
+          path: upstream
 
-      - name: Remove unwanted files from upstream
+      # 3. 删除不想要的文件
+      - name: Remove upstream config & workflows
         run: |
           rm -f upstream/wrangler.toml
           rm -rf upstream/.github/workflows
 
+      # 4. 拷贝剩余内容到工作区
       - name: Copy upstream content
         run: |
           cp -a upstream/. .
 
+      # 5. 提交并推送（仅当有变更时）
       - name: Commit & Push changes
         run: |
           git config user.name  "github-actions[bot]"
