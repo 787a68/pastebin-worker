@@ -2,7 +2,7 @@ name: Monthly Sync from upstream (goshujin)
 
 on:
   schedule:
-    - cron: '0 0 1 * *'
+    - cron: '0 0 1 * *'   # 每月 1 日 UTC 00:00
   workflow_dispatch:
 
 jobs:
@@ -10,24 +10,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. 检出当前仓库的默认分支（无需指定 ref）
-      - uses: actions/checkout@v4
+      # 1. 检出自己的默认分支
+      - name: Checkout self repo
+        uses: actions/checkout@v4
 
-      # 2. 检出上游仓库的 goshujin 分支
-      - uses: actions/checkout@v4
+      # 2. 检出上游 goshujin 分支到 upstream 目录
+      - name: Checkout upstream goshujin
+        uses: actions/checkout@v4
         with:
           repository: SharzyL/pastebin-worker
           ref: goshujin
           path: upstream
 
-      # 3. 同步文件并排除 wrangler.toml
-      - run: |
-          rsync -a --delete --exclude='wrangler.toml' upstream/ .
+      # 3. Rsync 同步，排除 wrangler.toml 和所有 workflows，兼容文件不存在的情况
+      - name: Sync files excluding config and workflows
+        run: |
+          rsync -a --delete \
+            --exclude='wrangler.toml' \
+            --exclude='.github/workflows/' \
+            --ignore-missing-args \
+            upstream/ .
 
-      # 4. 提交并推送到默认分支
-      - run: |
+      # 4. 提交并推送（仅在有变更时）
+      - name: Commit & Push
+        run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
-          git diff --cached --quiet || git commit -m "chore: Monthly sync from upstream (goshujin)"
+          git diff --cached --quiet || git commit -m "chore: Monthly sync from upstream (goshujin) — exclude wrangler.toml & workflows"
           git push
