@@ -29,7 +29,6 @@ enabled = true
 # Refer to https://developers.cloudflare.com/workers/wrangler/configuration/#routes
 pattern = "p.787a68.de/*"
 zone_name = "787a68.de"
-workers_dev = false
 
 [[kv_namespaces]]
 binding = "PB"  # do not touch this
