@@ -71,7 +71,7 @@ MAX_EXPIRATION = "30d"
 BASIC_AUTH = {}
 
 # Files larger than this threshold will be stored in R2
-R2_THRESHOLD = "20M"
+R2_THRESHOLD = "10M"
 
 # File larger than this will be denied
 R2_MAX_ALLOWED = "2G"
