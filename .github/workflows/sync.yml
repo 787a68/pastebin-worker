@@ -1,8 +1,7 @@
-name: Monthly Sync from upstream (goshujin branch)
+name: Monthly Sync from upstream (goshujin)
 
 on:
   schedule:
-    # 每月 1 日 UTC 00:00 执行
     - cron: '0 0 1 * *'
   workflow_dispatch:
 
@@ -11,26 +10,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 拉取目标仓库（dest-repo）默认分支
-      - name: Checkout self repo
-        uses: actions/checkout@v4
+      # 1. 检出当前仓库的默认分支（无需指定 ref）
+      - uses: actions/checkout@v4
 
-      # 拉取上游仓库的 goshujin 分支到 upstream 目录
-      - name: Checkout upstream goshujin branch
-        uses: actions/checkout@v4
+      # 2. 检出上游仓库的 goshujin 分支
+      - uses: actions/checkout@v4
         with:
           repository: SharzyL/pastebin-worker
           ref: goshujin
           path: upstream
 
-      # 同步文件，排除 wrangler.toml
-      - name: Rsync files
-        run: |
+      # 3. 同步文件并排除 wrangler.toml
+      - run: |
           rsync -a --delete --exclude='wrangler.toml' upstream/ .
 
-      # 提交并推送改动（如有）
-      - name: Commit & Push changes
-        run: |
+      # 4. 提交并推送到默认分支
+      - run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
