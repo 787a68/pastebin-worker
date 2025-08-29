@@ -16,7 +16,7 @@ binding = "ASSETS"
 
 [triggers]
 # clean r2 garbage every day
-crons = ["0 */6 * * *"]
+crons = ["0 0 * * *"]
 
 #----------------------------------------
 # lines below are what you should modify
